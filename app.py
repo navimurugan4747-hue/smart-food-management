@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import check_password_hash
 
 from config import Config
-from database.db import (
+from db import (
     get_db, get_all_food, get_food_by_id, get_user_by_email,
     create_user, place_order, get_orders_by_user, get_admin_dashboard_data
 )

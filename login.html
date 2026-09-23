@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In | Smart Food Management System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-dark text-white p-4 text-center border-bottom border-warning border-3">
+                    <div class="brand-icon text-warning mb-2 fs-2">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1">Welcome Back</h3>
+                    <p class="text-secondary small mb-0">Sign in to access your meal recommendations and dashboard</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <!-- Quick Demo Fill Helpers for College Presentation -->
+                    <div class="p-3 mb-4 rounded-3 bg-light border">
+                        <small class="fw-bold text-muted d-block mb-2 text-uppercase" style="font-size: 0.75rem;">
+                            <i class="fa-solid fa-wand-magic-sparkles text-warning me-1"></i> Quick Demo Logins (Click to autofill):
+                        </small>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill flex-grow-1"
+                                    onclick="fillCredentials('student@smartfood.com', 'user123')">
+                                <i class="fa-solid fa-user me-1"></i> Student User
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill flex-grow-1"
+                                    onclick="fillCredentials('admin@smartfood.com', 'admin123')">
+                                <i class="fa-solid fa-shield-halved me-1"></i> Admin Officer
+                            </button>
+                        </div>
+                    </div>
+
+                    <form action="{{ url_for('login') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-semibold small">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-envelope text-muted"></i></span>
+                                <input type="email" class="form-control bg-light border-start-0 ps-0" id="email" name="email" value="{{ email or '' }}" placeholder="name@college.edu" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-semibold small">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-muted"></i></span>
+                                <input type="password" class="form-control bg-light border-start-0 ps-0" id="password" name="password" placeholder="Enter your password" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-warning text-dark fw-bold py-2 rounded-pill shadow-sm">
+                                <i class="fa-solid fa-right-to-bracket me-2"></i> Sign In
+                            </button>
+                        </div>
+
+                        <div class="text-center text-muted small">
+                            Don't have an account yet? 
+                            <a href="{{ url_for('register') }}" class="text-primary fw-semibold text-decoration-none">Create Account</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

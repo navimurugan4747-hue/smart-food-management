@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}Food Waste Risk Prediction (Decision Tree) | Smart Food Management System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="text-center max-w-2xl mx-auto mb-5">
+        <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill fw-semibold mb-2">
+            <i class="fa-solid fa-recycle me-1"></i> Model 3: Decision Tree Classifier
+        </span>
+        <h1 class="fw-bold mb-2">Food Waste Risk Prediction</h1>
+        <p class="text-muted">
+            Proactively classify potential food wastage risk using an intelligent <strong>Decision Tree Classifier</strong>. Receive instant managerial advice to redistribute surplus, prevent losses, and support food security.
+        </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Input Form Column -->
+        <div class="col-lg-5">
+            <div class="prediction-panel h-100">
+                <div class="d-flex align-items-center gap-2 mb-4 pb-2 border-bottom">
+                    <div class="aiml-icon-box bg-success-subtle text-success mb-0" style="width: 44px; height: 44px; font-size: 1.2rem;">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0">Kitchen Production Parameters</h5>
+                        <small class="text-muted">Input batch preparation metrics</small>
+                    </div>
+                </div>
+
+                <form action="{{ url_for('waste_prediction') }}" method="POST">
+                    <!-- Food Item Selection (Optional Association) -->
+                    <div class="mb-3">
+                        <label for="food_id" class="form-label fw-semibold small">
+                            <i class="fa-solid fa-bowl-food text-success me-1"></i> Dish / Batch Name
+                        </label>
+                        <select class="form-select rounded-3" id="food_id" name="food_id">
+                            {% for f in food_items %}
+                            <option value="{{ f.id }}">{{ f.name }} ({{ f.category }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Quantity Prepared -->
+                    <div class="mb-3">
+                        <label for="quantity_prepared" class="form-label fw-semibold small">
+                            <i class="fa-solid fa-kitchen-set text-success me-1"></i> Food Quantity Prepared (Portions)
+                        </label>
+                        <input type="number" class="form-control rounded-3" id="quantity_prepared" name="quantity_prepared"
+                               min="10" max="1000" value="{{ qty_prepared }}" required>
+                        <small class="text-muted">Total portions cooked/prepped for this service window.</small>
+                    </div>
+
+                    <!-- Expected Orders -->
+                    <div class="mb-3">
+                        <label for="expected_orders" class="form-label fw-semibold small">
+                            <i class="fa-solid fa-users text-success me-1"></i> Expected Orders (Portions)
+                        </label>
+                        <input type="number" class="form-control rounded-3" id="expected_orders" name="expected_orders"
+                               min="10" max="1000" value="{{ expected_orders }}" required>
+                        <small class="text-muted">Forecasted consumption count.</small>
+                    </div>
+
+                    <!-- Current Stock -->
+                    <div class="mb-3">
+                        <label for="current_stock" class="form-label fw-semibold small">
+                            <i class="fa-solid fa-boxes-stacked text-success me-1"></i> Current Existing Stock (Portions)
+                        </label>
+                        <input type="number" class="form-control rounded-3" id="current_stock" name="current_stock"
+                               min="0" max="500" value="{{ current_stock }}" required>
+                    </div>
+
+                    <div class="row g-2 mb-4">
+                        <!-- Expiry Time -->
+                        <div class="col-6">
+                            <label for="expiry_hours" class="form-label fw-semibold small">
+                                <i class="fa-solid fa-hourglass-half text-success me-1"></i> Expiry (Hours)
+                            </label>
+                            <input type="number" class="form-control rounded-3" id="expiry_hours" name="expiry_hours"
+                                   min="1" max="72" value="{{ expiry_hours }}" required>
+                            <small class="text-muted">Hours remaining.</small>
+                        </div>
+                        <!-- Previous Wastage -->
+                        <div class="col-6">
+                            <label for="previous_wastage" class="form-label fw-semibold small">
+                                <i class="fa-solid fa-trash-can text-success me-1"></i> Prior Waste (Qty)
+                            </label>
+                            <input type="number" class="form-control rounded-3" id="previous_wastage" name="previous_wastage"
+                                   min="0" max="200" value="{{ previous_wastage }}" required>
+                            <small class="text-muted">Discarded last time.</small>
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success fw-bold btn-lg rounded-pill shadow-sm">
+                            <i class="fa-solid fa-shield-virus me-2"></i> Predict Waste Risk
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Output Column -->
+        <div class="col-lg-7">
+            {% if prediction %}
+            <div class="result-card mb-4">
+                <!-- Result Banner -->
+                <div class="result-header {{ prediction.risk_class }}">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fs-1">
+                                {% if prediction.risk_class == 'low' %}
+                                <i class="fa-solid fa-circle-check"></i>
+                                {% elif prediction.risk_class == 'medium' %}
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                {% else %}
+                                <i class="fa-solid fa-radiation"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <small class="text-uppercase fw-semibold opacity-75">Decision Tree Classification</small>
+                                <h3 class="fw-bold mb-0">{{ prediction.risk_level }}</h3>
+                            </div>
+                        </div>
+                        <span class="badge bg-white text-dark rounded-pill px-3 py-2 fw-bold">
+                            Model Accuracy: {{ (prediction.accuracy * 100)|round(1) }}%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white">
+                    <!-- Action Suggestion Box -->
+                    <div class="p-3 rounded-4 mb-4" style="background-color: #f8fafc; border-left: 5px solid {{ prediction.color }};">
+                        <h6 class="fw-bold mb-1" style="color: {{ prediction.color }};">
+                            <i class="fa-solid fa-lightbulb me-1"></i> Suggested Actionable Strategy:
+                        </h6>
+                        <p class="mb-0 text-dark fw-medium">{{ prediction.action }}</p>
+                    </div>
+
+                   ```html
+<!-- Risk Probability Distribution -->
+<h6 class="fw-bold mb-3">
+    <i class="fa-solid fa-chart-column text-muted me-1"></i>
+    Risk Probability Breakdown
+</h6>
+
+<div class="p-3 rounded-4 border bg-light mb-4">
+    <canvas id="wasteRiskChart" height="180"></canvas>
+</div>
+
+<div class="row g-2 mb-4">
+    {% for cls_name, prob in prediction.probabilities.items() %}
+    <div class="col-4">
+        <div class="p-2 text-center rounded-3 border bg-light">
+            <small class="text-muted d-block">{{ cls_name }} Risk</small>
+            <strong class="fs-5 {% if cls_name == 'Low' %}text-success{% elif cls_name == 'Medium' %}text-warning{% else %}text-danger{% endif %}">
+                {{ prob }}%
+            </strong>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const riskLabels = [
+        {% for cls_name, prob in prediction.probabilities.items() %}
+        "{{ cls_name }}",
+        {% endfor %}
+    ];
+
+    const riskValues = [
+        {% for cls_name, prob in prediction.probabilities.items() %}
+        {{ prob }},
+        {% endfor %}
+    ];
+
+    const ctx = document.getElementById('wasteRiskChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: riskLabels,
+            datasets: [{
+                label: 'Risk Probability (%)',
+                data: riskValues,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+```
+
+
+                    <!-- Analysis of Contributing Factors -->
+                    <h6 class="fw-bold mb-2"><i class="fa-solid fa-magnifying-glass-chart text-muted me-1"></i> Key Contributing Factors</h6>
+                    <ul class="list-group list-group-flush mb-3 small">
+                        {% for rf in prediction.risk_factors %}
+                        <li class="list-group-item px-0 py-2 d-flex align-items-center">
+                            <i class="fa-solid fa-circle-dot me-2 text-warning" style="font-size: 8px;"></i>
+                            <span>{{ rf }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Food Surplus Badge -->
+                    <div class="p-3 rounded-3 bg-light border d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted d-block">Estimated Surplus Inventory</small>
+                            <strong class="text-dark">{{ prediction.surplus_units }} Portions</strong>
+                        </div>
+                        <div>
+                            {% if prediction.risk_class == 'high' %}
+                            <span class="badge bg-danger px-3 py-2 rounded-pill">
+                                <i class="fa-solid fa-hand-holding-heart me-1"></i> Charity Donation Eligible
+                            </span>
+                            {% elif prediction.risk_class == 'medium' %}
+                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
+                                <i class="fa-solid fa-tags me-1"></i> Happy Hour Promo Recommended
+                            </span>
+                            {% else %}
+                            <span class="badge bg-success px-3 py-2 rounded-pill">
+                                <i class="fa-solid fa-check me-1"></i> Balanced Inventory
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Initial Empty State -->
+            <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white h-100 d-flex flex-column justify-content-center">
+                <div class="text-success fs-1 mb-3">
+                    <i class="fa-solid fa-recycle"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Evaluate Food Waste Risk</h4>
+                <p class="text-muted max-w-md mx-auto mb-4">
+                    Enter the kitchen batch details on the left and click <strong>“Predict Waste Risk”</strong>. The Decision Tree will split features across critical nodes and deliver risk assessment.
+                </p>
+                <div class="p-3 rounded-3 bg-light border text-start small text-muted mx-auto" style="max-width: 440px;">
+                    <strong>Decision Tree Splitting Logic:</strong><br>
+                    Evaluates Gini impurity across feature splits including surplus ratio $\frac{\text{prep} + \text{stock} - \text{orders}}{\text{orders}}$, shelf life (hours), and past waste patterns.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.name }} | Smart Food Management System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-decoration-none text-muted">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('menu') }}" class="text-decoration-none text-muted">Menu</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">{{ item.name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Main Detail Card -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-white">
+        <div class="row g-0">
+            <!-- Left: Food Image Hero -->
+            <div class="col-lg-6 position-relative" style="min-height: 380px;">
+                <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0">
+                <div class="position-absolute top-0 start-0 m-4">
+                    <span class="diet-badge {% if item.vegetarian == 1 %}veg{% else %}non-veg{% endif %}" style="width: 26px; height: 26px;"
+                          title="{% if item.vegetarian == 1 %}Vegetarian{% else %}Non-Vegetarian{% endif %}"></span>
+                </div>
+                <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-2">
+                        {{ item.category }}
+                    </span>
+                    <h2 class="text-white fw-bold mb-0">{{ item.name }}</h2>
+                </div>
+            </div>
+
+            <!-- Right: Details & Action Controls -->
+            <div class="col-lg-6 p-4 p-md-5 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="rating-pill fs-6 px-3 py-1">
+                                <i class="fa-solid fa-star"></i> {{ item.rating }}
+                            </span>
+                            <small class="text-muted">(Based on student ratings)</small>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill">
+                            <i class="fa-solid fa-circle-check me-1"></i> Kitchen Ready
+                        </span>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="text-muted small text-uppercase fw-semibold d-block mb-1">Price per portion</span>
+                        <div class="d-flex align-items-baseline gap-2">
+                            <span class="fs-1 fw-bold text-dark">&#8377;{{ "%.0f"|format(item.price) }}</span>
+                            <small class="text-muted">GST included</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">Description</h6>
+                        <p class="text-secondary leading-relaxed">{{ item.description }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">Key Ingredients</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for ing in item.ingredients.split(',') %}
+                            <span class="badge bg-light text-dark border px-3 py-2 rounded-pill small">
+                                <i class="fa-solid fa-leaf text-success me-1"></i> {{ ing.strip() }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4 p-3 rounded-3 bg-light border">
+                        <div class="col-6">
+                            <small class="text-muted d-block">Taste Profile</small>
+                            <strong class="text-dark"><i class="fa-solid fa-pepper-hot text-danger me-1"></i> {{ item.taste }}</strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">Preparation Type</small>
+                            <strong class="text-dark">{% if item.vegetarian == 1 %}100% Pure Vegetarian{% else %}Non-Vegetarian{% endif %}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="pt-3 border-top d-flex gap-3">
+                    <button class="btn btn-warning text-dark fw-bold btn-lg rounded-pill px-4 flex-grow-1 shadow-sm ajax-add-to-cart"
+                            data-food-id="{{ item.id }}" data-food-name="{{ item.name }}">
+                        <i class="fa-solid fa-basket-shopping me-2"></i> Add to Meal Tray
+                    </button>
+                    <a href="{{ url_for('view_cart') }}" class="btn btn-outline-dark btn-lg rounded-pill px-4">
+                        View Tray
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI KNN Related Dishes -->
+    {% if similar_items %}
+    <div class="mb-5">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <span class="badge bg-info-subtle text-info border border-info px-3 py-1 rounded-pill fw-semibold mb-1">
+                    <i class="fa-solid fa-wand-magic-sparkles me-1"></i> K-Nearest Neighbors AI
+                </span>
+                <h3 class="fw-bold mb-0">Customers Who Ordered This Also Loved</h3>
+            </div>
+            <a href="{{ url_for('recommendation') }}" class="btn btn-sm btn-outline-info rounded-pill">
+                Explore AI Engine &rarr;
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for sim in similar_items %}
+            <div class="col-md-4">
+                <div class="food-card h-100">
+                    <div class="food-card-img-wrapper" style="height: 170px;">
+                        <img src="{{ sim.image_url }}" alt="{{ sim.name }}">
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="diet-badge {% if sim.vegetarian == 1 %}veg{% else %}non-veg{% endif %}"></span>
+                        </div>
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="match-score-badge">
+                                <i class="fa-solid fa-bolt"></i> {{ sim.match_score }}% Match
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <h6 class="fw-bold mb-1 text-truncate">{{ sim.food_name }}</h6>
+                        <small class="text-muted mb-2">{{ sim.category }} &bull; {{ sim.taste }}</small>
+                        <div class="mt-auto d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="fw-bold text-dark">&#8377;{{ "%.0f"|format(sim.price) }}</span>
+                            <div class="d-flex gap-1">
+                                <a href="{{ url_for('food_details', food_id=sim.food_id) }}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                    View
+                                </a>
+                                <button class="btn btn-sm btn-warning text-dark fw-bold rounded-pill ajax-add-to-cart"
+                                        data-food-id="{{ sim.food_id }}" data-food-name="{{ sim.food_name }}">
+                                    + Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | Smart Food Management System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Admin Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-danger px-3 py-1 rounded-pill fw-semibold">Kitchen Operations Cockpit</span>
+                <span class="badge bg-secondary rounded-pill small">DB Engine: {{ stats.db_engine }}</span>
+            </div>
+            <h2 class="fw-bold mb-0">Smart Kitchen Management &amp; AIML Analytics</h2>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{{ url_for('demand_prediction') }}" class="btn btn-warning text-dark fw-bold rounded-pill px-3 shadow-sm">
+                <i class="fa-solid fa-chart-line me-1"></i> Demand Forecaster
+            </a>
+            <a href="{{ url_for('waste_prediction') }}" class="btn btn-success fw-bold rounded-pill px-3 shadow-sm">
+                <i class="fa-solid fa-recycle me-1"></i> Waste Risk Evaluator
+            </a>
+        </div>
+    </div>
+
+    <!-- KPI Metric Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Users -->
+        <div class="col-lg-3 col-sm-6">
+            <div class="kpi-card">
+                <div class="kpi-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <div class="kpi-value">{{ stats.total_users }}</div>
+                    <small class="text-muted fw-semibold">Total Diners / Users</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="col-lg-3 col-sm-6">
+            <div class="kpi-card">
+                <div class="kpi-icon bg-warning bg-opacity-10 text-warning">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <div>
+                    <div class="kpi-value">{{ stats.total_food }}</div>
+                    <small class="text-muted fw-semibold">Active Menu Dishes</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="col-lg-3 col-sm-6">
+            <div class="kpi-card">
+                <div class="kpi-icon bg-info bg-opacity-10 text-info">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <div>
+                    <div class="kpi-value">{{ stats.total_orders }}</div>
+                    <small class="text-muted fw-semibold">Completed Orders</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue -->
+        <div class="col-lg-3 col-sm-6">
+            <div class="kpi-card">
+                <div class="kpi-icon bg-success bg-opacity-10 text-success">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <div>
+                    <div class="kpi-value">&#8377;{{ "%.0f"|format(stats.total_revenue) }}</div>
+                    <small class="text-muted fw-semibold">Kitchen Sales Revenue</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time ML Prediction Highlights -->
+    <div class="row g-4 mb-4">
+        <!-- Demand Forecast Quick Card -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="badge bg-warning text-dark rounded-pill fw-bold">Linear Regression</span>
+                        <h5 class="fw-bold mb-0 mt-1">Weekend Demand Forecast Preview</h5>
+                    </div>
+                    <a href="{{ url_for('demand_prediction') }}" class="btn btn-outline-warning text-dark btn-sm rounded-pill">Open Model &rarr;</a>
+                </div>
+
+                <div class="p-3 rounded-3 bg-light border mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-semibold text-dark">Category: {{ sample_demand.food_category }}</span>
+                        <span class="badge bg-dark">{{ sample_demand.day }}</span>
+                    </div>
+                    <div class="d-flex justify-content-around text-center py-2">
+                        <div>
+                            <small class="text-muted d-block">Predicted Demand</small>
+                            <span class="fs-4 fw-bold text-dark">{{ sample_demand.predicted_demand }} units</span>
+                        </div>
+                        <div class="border-start ps-3">
+                            <small class="text-muted d-block">Suggested Preparation</small>
+                            <span class="fs-4 fw-bold text-success">{{ sample_demand.suggested_preparation }} units</span>
+                        </div>
+                        <div class="border-start ps-3">
+                            <small class="text-muted d-block">Safety Buffer</small>
+                            <span class="fs-4 fw-bold text-primary">+{{ sample_demand.buffer_units }} units</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 180px;">
+                    <canvas id="adminDemandChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Waste Prediction Quick Card -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                    <div>
+                        <span class="badge bg-success rounded-pill fw-bold">Decision Tree Classifier</span>
+                        <h5 class="fw-bold mb-0 mt-1">Batch Waste Risk Evaluation</h5>
+                    </div>
+                    <a href="{{ url_for('waste_prediction') }}" class="btn btn-outline-success btn-sm rounded-pill">Open Model &rarr;</a>
+                </div>
+
+                <div class="p-3 rounded-3 mb-3 border" style="background-color: #f8fafc; border-left: 5px solid {{ sample_waste.color }} !important;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge {{ sample_waste.badge }} fs-6 px-3 py-1 rounded-pill">{{ sample_waste.risk_level }}</span>
+                        <small class="text-muted">Batch: 150 prep / 95 orders / 6h expiry</small>
+                    </div>
+                    <p class="small text-dark mb-0 fw-medium"><strong>Strategy:</strong> {{ sample_waste.action }}</p>
+                </div>
+
+                <h6 class="fw-bold small mb-2 text-muted text-uppercase">Predicted Waste Probability Distribution</h6>
+                <div style="height: 180px;">
+                    <canvas id="adminWasteChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory & Recent Orders Tables -->
+    <div class="row g-4">
+        <!-- Real-time Food Inventory / Stock -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <h5 class="fw-bold mb-0"><i class="fa-solid fa-boxes-stacked text-warning me-2"></i> Low Stock Alerts</h5>
+                    <span class="badge bg-light text-dark border">Auto-Replenish</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Food Item</th>
+                                <th>Category</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in stats.stocks %}
+                            <tr>
+                                <td class="fw-semibold">{{ s.name }}</td>
+                                <td class="text-muted">{{ s.category }}</td>
+                                <td><strong>{{ s.current_stock }}</strong> portions</td>
+                                <td>
+                                    {% if s.current_stock <= s.min_threshold %}
+                                    <span class="badge bg-danger rounded-pill">Reorder Alert</span>
+                                    {% else %}
+                                    <span class="badge bg-success-subtle text-success rounded-pill">Adequate</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Customer Orders -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <h5 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left text-warning me-2"></i> Kitchen Live Orders</h5>
+                    <span class="badge bg-primary rounded-pill">Live Feed</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order #</th>
+                                <th>Diner Name</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ord in stats.recent_orders %}
+                            <tr>
+                                <td class="fw-bold">#{{ ord.id }}</td>
+                                <td>{{ ord.customer_name }}</td>
+                                <td class="fw-bold text-dark">&#8377;{{ "%.2f"|format(ord.total_amount) }}</td>
+                                <td>
+                                    <span class="badge {% if ord.status == 'Delivered' %}bg-success{% elif ord.status == 'Preparing' %}bg-warning text-dark{% else %}bg-info{% endif %} rounded-pill">
+                                        {{ ord.status }}
+                                    </span>
+                                </td>
+                                <td class="text-muted">{{ ord.created_at }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-3 text-muted">No orders placed yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Admin Demand Trend Chart
+    const demandCtx = document.getElementById('adminDemandChart').getContext('2d');
+    new Chart(demandCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ sample_demand.chart_labels|tojson }},
+            datasets: [{
+                label: 'Projected Demand',
+                data: {{ sample_demand.chart_values|tojson }},
+                backgroundColor: 'rgba(247, 127, 0, 0.75)',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: false, grid: { color: '#f1f5f9' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // 2. Admin Waste Probability Doughnut Chart
+    const wasteCtx = document.getElementById('adminWasteChart').getContext('2d');
+    const probs = {{ sample_waste.probabilities|tojson }};
+    new Chart(wasteCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(probs),
+            datasets: [{
+                data: Object.values(probs),
+                backgroundColor: ['#dc2626', '#16a34a', '#d97706'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right' }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

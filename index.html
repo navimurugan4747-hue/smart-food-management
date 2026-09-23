@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Smart Food Management System Using AIML{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-semibold mb-3">
+                    <i class="fa-solid fa-sparkles me-1"></i> Next-Gen Smart Campus & Restaurant Tech
+                </span>
+                <h1 class="hero-title mb-3">
+                    Smart Food Management System Using <span class="text-warning">AIML</span>
+                </h1>
+                <p class="hero-subtitle mb-4">
+                    Eliminate food wastage, accurately forecast daily demand with <strong>Linear Regression</strong>, and experience personalized food recommendations powered by <strong>K-Nearest Neighbors (KNN)</strong>.
+                </p>
+
+                <!-- Search Bar Form -->
+                <form action="{{ url_for('menu') }}" method="GET" class="mb-4">
+                    <div class="input-group input-group-lg shadow rounded-pill overflow-hidden bg-white p-1">
+                        <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control border-0 shadow-none" placeholder="Search dishes, ingredients (e.g. Dosa, Biryani, Paneer, Burger)...">
+                        <button class="btn btn-warning text-dark fw-bold px-4 rounded-pill" type="submit">
+                            Search Menu
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Quick Action Buttons -->
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ url_for('recommendation') }}" class="btn btn-warning text-dark fw-bold px-4 py-3 rounded-pill shadow-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Get AI Recommendations
+                    </a>
+                    <a href="{{ url_for('menu') }}" class="btn btn-outline-light px-4 py-3 rounded-pill">
+                        <i class="fa-solid fa-utensils me-2"></i> Explore Full Menu
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Highlights Card -->
+            <div class="col-lg-5">
+                <div class="hero-card shadow-lg">
+                    <div class="d-flex align-items-center justify-content-between pb-3 border-bottom border-secondary mb-3">
+                        <span class="text-uppercase fw-bold text-warning small">
+                            <i class="fa-solid fa-brain me-1"></i> Real-time AIML Engine
+                        </span>
+                        <span class="badge bg-success rounded-pill px-2 py-1"><i class="fa-solid fa-circle me-1" style="font-size: 8px;"></i> Live Pipeline</span>
+                    </div>
+
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-3 p-2 rounded bg-black bg-opacity-25">
+                            <div class="aiml-icon-box bg-info bg-opacity-25 text-info mb-0" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                <i class="fa-solid fa-utensils"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Food Recommendation</h6>
+                                <small class="text-light-50">K-Nearest Neighbors (KNN Cosine Metric)</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 p-2 rounded bg-black bg-opacity-25">
+                            <div class="aiml-icon-box bg-warning bg-opacity-25 text-warning mb-0" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Demand Forecasting</h6>
+                                <small class="text-light-50">Multivariate Linear Regression Model</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 p-2 rounded bg-black bg-opacity-25">
+                            <div class="aiml-icon-box bg-success bg-opacity-25 text-success mb-0" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Waste Risk Prevention</h6>
+                                <small class="text-light-50">Decision Tree Risk Classifier (Gini Index)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top border-secondary text-center">
+                        <a href="{{ url_for('demand_prediction') }}" class="text-warning text-decoration-none fw-semibold small">
+                            Launch Kitchen Forecasting <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Food Categories Section -->
+<section class="py-5 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <span class="text-primary fw-semibold text-uppercase small">Cuisines & Varieties</span>
+                <h3 class="fw-bold mb-0">Browse By Food Category</h3>
+            </div>
+            <a href="{{ url_for('menu') }}" class="btn btn-outline-dark rounded-pill btn-sm px-3">
+                View All Categories <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-3">
+            {% set cat_icons = {
+                'South Indian': 'fa-solid fa-plate-wheat',
+                'North Indian': 'fa-solid fa-bowl-rice',
+                'Chinese': 'fa-solid fa-fire-burner',
+                'Fast Food': 'fa-solid fa-burger',
+                'Desserts': 'fa-solid fa-ice-cream'
+            } %}
+            {% for cat in categories %}
+            <div class="col-lg col-md-4 col-6">
+                <a href="{{ url_for('menu', category=cat) }}" class="text-decoration-none">
+                    <div class="card h-100 border text-center p-3 rounded-4 shadow-sm hover-link transition">
+                        <div class="mx-auto mb-2 text-warning fs-2">
+                            <i class="{{ cat_icons.get(cat, 'fa-solid fa-utensils') }}"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">{{ cat }}</h6>
+                        <small class="text-muted">Explore items</small>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Food Items -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <span class="text-warning fw-semibold text-uppercase small"><i class="fa-solid fa-fire me-1"></i> Highly Rated</span>
+                <h3 class="fw-bold mb-0">Popular Chef Specialities</h3>
+            </div>
+            <a href="{{ url_for('menu') }}" class="btn btn-outline-warning text-dark fw-semibold rounded-pill px-3">
+                Full Menu <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for item in featured_items %}
+            <div class="col-lg-4 col-md-6">
+                <div class="food-card">
+                    <div class="food-card-img-wrapper">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy">
+                        <div class="position-absolute top-0 start-0 m-3">
+                            <span class="diet-badge {% if item.vegetarian == 1 %}veg{% else %}non-veg{% endif %}" title="{% if item.vegetarian == 1 %}Vegetarian{% else %}Non-Vegetarian{% endif %}"></span>
+                        </div>
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="rating-pill">
+                                <i class="fa-solid fa-star"></i> {{ item.rating }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 d-flex flex-column flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h5 class="fw-bold mb-0 text-truncate" title="{{ item.name }}">{{ item.name }}</h5>
+                        </div>
+                        <small class="text-muted mb-2">{{ item.category }} &bull; <span class="text-warning fw-semibold">{{ item.taste }} Taste</span></small>
+                        <p class="text-secondary small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ item.description }}
+                        </p>
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="price-tag">&#8377;{{ "%.0f"|format(item.price) }}</span>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('food_details', food_id=item.id) }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                    Details
+                                </a>
+                                <button class="btn btn-warning text-dark fw-semibold btn-sm rounded-pill px-3 ajax-add-to-cart"
+                                        data-food-id="{{ item.id }}" data-food-name="{{ item.name }}">
+                                    <i class="fa-solid fa-plus me-1"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- AIML How It Works Section -->
+<section class="py-5 bg-white border-top">
+    <div class="container">
+        <div class="text-center max-w-xl mx-auto mb-5">
+            <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-1 rounded-pill fw-semibold mb-2">Machine Learning Architecture</span>
+            <h2 class="fw-bold">How Artificial Intelligence Powers Our System</h2>
+            <p class="text-muted">Transparent mathematical models integrated into daily food management operations.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Model 1 Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="aiml-feature-card">
+                    <div class="aiml-icon-box bg-info-subtle text-info">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <span class="badge bg-info text-dark rounded-pill mb-2">Model 1: Recommendation</span>
+                    <h4 class="fw-bold mb-2">KNN Food Recommender</h4>
+                    <p class="text-muted small">
+                        Calculates cosine distances across multi-dimensional feature vectors (category, taste, dietary restrictions, pricing, ratings) to recommend meals uniquely aligned to customer taste profiles.
+                    </p>
+                    <a href="{{ url_for('recommendation') }}" class="btn btn-outline-info btn-sm rounded-pill fw-semibold mt-2">
+                        Try Food Recommendation &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Model 2 Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="aiml-feature-card">
+                    <div class="aiml-icon-box bg-warning-subtle text-warning">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <span class="badge bg-warning text-dark rounded-pill mb-2">Model 2: Demand Planning</span>
+                    <h4 class="fw-bold mb-2">Linear Regression</h4>
+                    <p class="text-muted small">
+                        Forecasts expected meal consumption counts by analyzing day-of-week demand trends, historical daily orders, category popularity, and safety preparation thresholds (+12%).
+                    </p>
+                    <a href="{{ url_for('demand_prediction') }}" class="btn btn-outline-warning text-dark btn-sm rounded-pill fw-semibold mt-2">
+                        Launch Demand Predictor &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Model 3 Card -->
+            <div class="col-lg-4 col-md-6">
+                <div class="aiml-feature-card">
+                    <div class="aiml-icon-box bg-success-subtle text-success">
+                        <i class="fa-solid fa-recycle"></i>
+                    </div>
+                    <span class="badge bg-success rounded-pill mb-2">Model 3: Waste Mitigation</span>
+                    <h4 class="fw-bold mb-2">Decision Tree Classifier</h4>
+                    <p class="text-muted small">
+                        Classifies risk into Low, Medium, or High Waste levels based on preparation batches, real-time stock, remaining shelf life, and previous discard patterns, suggesting actionable mitigations.
+                    </p>
+                    <a href="{{ url_for('waste_prediction') }}" class="btn btn-outline-success btn-sm rounded-pill fw-semibold mt-2">
+                        Predict Waste Risk &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

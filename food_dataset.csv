@@ -1,0 +1,20 @@
+﻿food_id,food_name,category,taste,vegetarian,price,rating,description,ingredients,image_url
+1,Masala Dosa,South Indian,Medium,1,120,4.6,Crispy dosa served with potato masala,Rice batter; Potato; Spices,https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500
+2,Idli Sambar,South Indian,Mild,1,80,4.5,Soft idli served with sambar and chutney,Rice; Urad dal; Sambar,https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=500
+3,Medu Vada,South Indian,Medium,1,90,4.4,Crispy lentil vada served with chutney,Urad dal; Pepper; Curry leaves,https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500
+4,Chicken Biryani,Biryani,Spicy,0,260,4.8,Fragrant rice cooked with spicy chicken,Chicken; Basmati rice; Spices,https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500
+5,Chettinad Chicken,South Indian,Spicy,0,280,4.7,Spicy chicken curry with roasted spices,Chicken; Pepper; Fennel; Coconut,https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=500
+6,Paneer Butter Masala,North Indian,Medium,1,220,4.6,Paneer cooked in creamy tomato gravy,Paneer; Tomato; Butter; Cream,https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500
+7,Butter Naan,North Indian,Mild,1,60,4.5,Soft naan served with curry,Wheat flour; Butter; Yogurt,https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500
+8,Chicken Fried Rice,Chinese,Medium,0,180,4.4,Fried rice with chicken and vegetables,Rice; Chicken; Vegetables; Soy sauce,https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500
+9,Veg Fried Rice,Chinese,Mild,1,150,4.3,Fried rice with fresh vegetables,Rice; Carrot; Beans; Cabbage,https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500
+10,Chicken Noodles,Chinese,Spicy,0,170,4.5,Noodles tossed with chicken and vegetables,Noodles; Chicken; Vegetables; Soy sauce,https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=500
+11,Margherita Pizza,Italian,Mild,1,250,4.6,Pizza with tomato sauce and mozzarella,Flour; Tomato; Mozzarella; Basil,https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500
+12,Chicken Pizza,Italian,Medium,0,320,4.7,Pizza topped with seasoned chicken,Flour; Chicken; Cheese; Tomato,https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500
+13,White Sauce Pasta,Italian,Mild,1,220,4.5,Creamy pasta with white sauce,Pasta; Cream; Cheese; Herbs,https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=500
+14,Chicken Burger,Fast Food,Medium,0,190,4.4,Juicy chicken burger with fresh vegetables,Bun; Chicken; Lettuce; Cheese,https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500
+15,Veg Burger,Fast Food,Mild,1,150,4.2,Vegetable patty burger with fresh salad,Bun; Vegetable patty; Lettuce; Tomato,https://images.unsplash.com/photo-1520072959219-c595dc870360?w=500
+16,French Fries,Fast Food,Salty,1,100,4.3,Crispy golden potato fries,Potato; Salt; Oil,https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=500
+17,Gulab Jamun,Dessert,Sweet,1,80,4.7,Soft milk dumplings soaked in sugar syrup,Milk solids; Sugar; Cardamom,https://images.unsplash.com/photo-1601303516534-6e9e2e1b0e5c?w=500
+18,Chocolate Cake,Dessert,Sweet,1,160,4.6,Moist chocolate cake with rich chocolate flavor,Flour; Cocoa; Sugar; Chocolate,https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500
+19,Fresh Fruit Salad,Dessert,Sweet,1,120,4.5,Mixed fresh seasonal fruits,Fruits; Honey; Nuts,https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=500

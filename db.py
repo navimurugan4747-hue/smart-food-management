@@ -13,7 +13,7 @@ import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SQLITE_DB_PATH = os.path.join(BASE_DIR, 'database', 'smart_food_management.db')
+SQLITE_DB_PATH = '/tmp/smart_food_management.db'
 FOOD_CSV_PATH = os.path.join(BASE_DIR, 'dataset', 'food_dataset.csv')
 
 # MySQL default configuration (can be overridden via environment variables)

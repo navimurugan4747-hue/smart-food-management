@@ -17,7 +17,7 @@ from models.recommendation_model import get_recommendation_engine
 from models.demand_model import get_demand_engine
 from models.waste_model import get_waste_engine
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 app.config.from_object(Config)
 
 # Initialize database on startup

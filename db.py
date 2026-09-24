@@ -6,15 +6,14 @@ This manager attempts to connect to MySQL first. If MySQL is not configured
 or the server is offline, it seamlessly falls back to SQLite so the project
 runs immediately without crashing during college vivas or laptop evaluations.
 """
-
 import os
 import sqlite3
 import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SQLITE_DB_PATH = '/tmp/smart_food_management.db'
-FOOD_CSV_PATH = os.path.join(BASE_DIR, 'dataset', 'food_dataset.csv')
+FOOD_CSV_PATH = os.path.join(BASE_DIR, 'food_dataset.csv')
 
 # MySQL default configuration (can be overridden via environment variables)
 MYSQL_HOST = os.getenv('MYSQL_HOST', 'localhost')
